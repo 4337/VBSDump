@@ -339,6 +339,7 @@ static main() {
 											    sValue = PrivDesc + 48; //events array
 										        Message("[+].                    Events Array : 0x%08x\r\n",Dword(sValue));
 												for(k=0;k<Word(PrivDesc + 40); k=k+1) {
+												    p_name = "";
 												    evArray = Dword(sValue) + (i * 4);
 												    if((i == 0) && (k == 0)) { //first
 												       p_name = "Main";
