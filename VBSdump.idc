@@ -210,7 +210,7 @@ static main() {
 	   Message("+---------------------------------------+\r\n");
 	   Message("| VBSdump v 1.1                         |\r\n");
 	   Message("| Marcin Ressel (echo)                  |\r\n");
-	   Message("| ... is so so uggly oO ...             |\r\n");
+	   Message("| ... is so so ugly oO ...              |\r\n");
 	   Message("+---------------------------------------+\r\n");
 	   Message("\r\n");
        if((ret = StructuresInit(mId)) != 0) {
