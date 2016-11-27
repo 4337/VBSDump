@@ -204,10 +204,13 @@ static main() {
 	   auto proc_addr;
 	   auto sub_main;
 	   auto tRtMainStruct;
+	   auto first_proc;
+	   auto obj_name;
 	   Message("\r\n");
 	   Message("+---------------------------------------+\r\n");
-	   Message("| VBSdump v 1.0                         |\r\n");
+	   Message("| VBSdump v 1.1                         |\r\n");
 	   Message("| Marcin Ressel (echo)                  |\r\n");
+	   Message("| ... is so so uggly oO ...             |\r\n");
 	   Message("+---------------------------------------+\r\n");
 	   Message("\r\n");
        if((ret = StructuresInit(mId)) != 0) {
@@ -309,6 +312,7 @@ static main() {
 									 sValue = cObjectItem + 40; //ObjectType
 									 Message("[+].                 Object Type : dec(%d) hex(%x)\r\n",Dword(sValue),Dword(sValue));
 									 sValue = cObjectItem + 24; //ObjectName ptr
+									 obj_name = sValue;
 									 Message("[+].                 Object Name : %s\r\n",GetString(Dword(sValue),-1,GetStringType(Dword(sValue))));   
 									 
 								     ObjectInfo2 = Dword(cObjectItem); //ObjectInfo
@@ -323,6 +327,7 @@ static main() {
                                         sValue = ObjectInfo2 + 36;
 									    methodsTable = Dword(sValue);
 									    Message("[+].                    Methods table : 0x%08x\r\n",methodsTable);
+										
 									 }
 									 PrivDesc = ObjectInfo2 + 52 + 4;
 									 if(Dword(ObjectInfo2 + 52) != PrivDesc) {   //PrivDesc has all what we need
@@ -340,19 +345,22 @@ static main() {
 										        Message("[+].                    Events Array : 0x%08x\r\n",Dword(sValue));
 												for(k=0;k<Word(PrivDesc + 40); k=k+1) {
 												    p_name = "";
-												    evArray = Dword(sValue) + (i * 4);
+												    evArray = Dword(sValue) + (k * 4);
 												    if((i == 0) && (k == 0)) { //first
-												       p_name = "Main";
+												       p_name = "First";
+													   first_proc = Dword(evArray) + 5 + Dword(Dword(evArray) + 1);
 													}
 													if(Word(evArray - 2)  != 0xffff) { //e
 													   p_name = p_name + "Event";
 													} else { //m
 													   p_name = p_name + "Method";
 													}
+													p_name = p_name  + ltoa(k,10) + GetString(Dword(obj_name),-1,GetStringType(Dword(obj_name))) + "Object";
 													proc_addr = Dword(evArray) + 5 + Dword(Dword(evArray) + 1);
 													MakeNameEx(proc_addr,"Form"+ltoa(i,10)+"_"+ltoa(k,10)+"_"+p_name+"Proc",SN_PUBLIC);
 													AddEntryPoint(proc_addr,proc_addr,"Form"+ltoa(i,10)+"_"+ltoa(k,10)+"_"+p_name+"Proc",1);
 						                            MakeFunction(proc_addr,0x00000000);
+													Message("[*].                    Found proc %s at 0x%08x\r\n",p_name,proc_addr);
 												}
 											 }
 										}
@@ -366,7 +374,7 @@ static main() {
 			 }
 	   }
 	   Message("[+]. SubMain Proc : 0x%08x\r\n",sub_main);
-	   Message("[+]. First Proc   : 0x%08x\r\n",proc_addr);
+	   Message("[+]. First Proc   : 0x%08x\r\n",first_proc);
 	   Message("[+]. Now you can press [ctrl + e] or [ctrl + F12] and play your game \r\n");
 	   CLEAR(0,"[+]. Done !\r\n");
 }
